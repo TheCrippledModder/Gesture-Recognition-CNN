@@ -4,8 +4,8 @@ Convolutional Neural Network that can recognize between 10 different types of ha
 ## Dependencies 
 [Dataset](https://www.kaggle.com/gti-upm/leapgestrecog)
 ```bash 
-pip install keras
 pip install tensorflow
+pip install keras
 ```
 
 ## Usage
