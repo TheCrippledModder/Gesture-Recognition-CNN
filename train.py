@@ -91,8 +91,8 @@ def train():
 	network.fit(samples, labels, batch_size=32, validation_split=0.3, epochs=iterations) # Train network and take 30% of samples as validation data
 
 
-	# After training our network we could also save the model so we could load it back in if we ever need it.
-	# network.save('Network.model')
+	# Save Model
+	network.save('Network.model')
 
 if (os.path.isfile('samples.npy') and os.path.isfile('labels.npy')):
 	train()
