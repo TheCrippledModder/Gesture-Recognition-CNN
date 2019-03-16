@@ -1,5 +1,7 @@
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Flatten, Conv2D, MaxPooling2D
+import tensorflow as tf
+from tensorflow.keras.models import Sequential, Model, load_model
+from tensorflow.keras.layers import Dense, Activation, Flatten, Conv2D, MaxPooling2D
+import matplotlib.pyplot as plt
 import numpy as np 
 import random
 import os
@@ -7,7 +9,7 @@ import cv2
 
 # Variables:
 img_size = 100 
-iterations = 5
+iterations = 2
 
 training_data = []
 
@@ -59,40 +61,47 @@ def to_categorical(array):
 		one_hot[idx][num] = 1
 	return one_hot
 
+def buildModel():
+	model = Sequential()
+
+	model.add(Conv2D(64, (3,3), input_shape=(100, 100, 3)))
+	model.add(Activation('relu'))
+	model.add(MaxPooling2D(pool_size=(2,2)))
+
+	model.add(Conv2D(128, (3,3)))
+	model.add(Activation('relu'))
+	model.add(MaxPooling2D(pool_size=(2,2)))
+
+	model.add(Conv2D(128, (3,3)))
+	model.add(Activation('relu'))
+	model.add(MaxPooling2D(pool_size=(2,2)))
+
+	model.add(Flatten())
+
+	model.add(Dense(10))
+	model.add(Activation('softmax'))
+
+	return model
 
 
 def train():
 	samples = np.load('samples.npy')
 	labels = to_categorical(np.load('labels.npy'))
 
-	samples = samples.astype('float32') / 255 # NImage data so we divide by 255 to normalize data.
+	tb_callback = tf.keras.callbacks.TensorBoard(log_dir='Logs\\')
 
-	network = Sequential()
+	samples = samples.astype('float32') / 255 # Image data so we divide by 255 to normalize data.
 
-	network.add(Conv2D(64, (3,3), input_shape=(100, 100, 3)))
-	network.add(Activation('relu'))
-	network.add(MaxPooling2D(pool_size=(2,2)))
-
-	network.add(Conv2D(128, (3,3)))
-	network.add(Activation('relu'))
-	network.add(MaxPooling2D(pool_size=(2,2)))
-
-	network.add(Conv2D(128, (3,3)))
-	network.add(Activation('relu'))
-	network.add(MaxPooling2D(pool_size=(2,2)))
-
-	network.add(Flatten())
-
-	network.add(Dense(10))
-	network.add(Activation('softmax')) # Using softmax instead of sigmoid because there are more than 2 classes.
+	network = buildModel()
 
 	network.compile(loss="categorical_crossentropy", optimizer="rmsprop", metrics=['accuracy'])
 
-	network.fit(samples, labels, batch_size=32, validation_split=0.3, epochs=iterations) # Train network and take 30% of samples as validation data
+	network.fit(samples, labels, batch_size=32, validation_split=0.3, epochs=iterations, callbacks=[tb_callback]) # Train model and take 30% of samples as validation data
 
 
 	# Save Model
 	network.save('Network.model')
+
 
 if (os.path.isfile('samples.npy') and os.path.isfile('labels.npy')):
 	train()
