@@ -1,11 +1,10 @@
 # Gesture-Recognition-CNN
-Convolutional Neural Network that can recognize between 10 different types of hand gestures with an accuracy ~99% after 5 epochs using [Keras](https://keras.io/).
+Convolutional Neural Network that can recognize between 10 different types of hand gestures with an accuracy ~99% after 5 epochs using [Tensorflow](https://www.tensorflow.org/).
 
 ## Dependencies 
 [Dataset](https://www.kaggle.com/gti-upm/leapgestrecog)
 ```bash 
 pip install tensorflow
-pip install keras
 ```
 
 ## Usage
